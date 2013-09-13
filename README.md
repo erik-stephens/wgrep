@@ -1,28 +1,28 @@
-wgrep
-=====
+# wgrep
 
 A grep-like utility for web content using CSS selectors
 
-# Examples
+## Examples
 
 To grep basic metadata:
 
-    wgrep common-crawl-file page.size page.ts page.url
+    wgrep page.size page.ts page.url < common-crawl-file
 
 To grep DOM elements:
 
-    wgrep common-craw-file expr.title expr.twitter_handles
+    wgrep expr.title expr.twitter_handles < common-craw-file
 
-assumes there is a python module `expr` with functions `title` and
-`twitter_handles`:
+assumes there is a python module `expr` with functions `title` and `twitter`:
 
     def title(page, jquery):
         return jquery('title').text()
 
-    def twitter_handles(page, jquery):
-        return jquery('title').text()
+    def twitter(page, pyqry):
+        def handle(i, el):
+            return '@' + pyqry(el).attr('href').split('twitter.com/', 1)[1]
+        return ','.join(pyqry('a[href*="twitter.com/"]').map(handle))
 
-# Setup
+## Setup
 
 The following commands assume current working directory is the base
 dir of wgrep checkout.
@@ -43,7 +43,7 @@ If having trouble installing lxml on OS X, this might help:
 
     STATIC_DEPS=true pip install -v lxml
 
-# Test Suite
+## Test Suite
 
 From the base wgrep dir:
 

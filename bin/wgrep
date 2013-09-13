@@ -1,15 +1,16 @@
 #! /usr/bin/env python
 """
-A grep-like utility to for common crawl files using jquery selector syntax.
+A grep-like utility for common crawl files using a jquery-like api (pyquery).
 
-Usage: wgrep <path> {<expressions>}
-
-  - path: path to page contents in common crawl format
-    - see https://s3.amazonaws.com/cc_example_data/com.searchengineland/29736.gz
+Usage: wgrep {<expressions>}
 
   - expression: one or more expressions to search for & report on
     - a path to a python function (eg pkg.module.method), or
-    - a special path `page`.<attr> (eg `page.url`, see `wgrep.Page` for more)
+    - a special path `page` and attribute (eg `page.url`, see `wgrep.Page`)
+
+Pages are read from stdin and need to be in common crawl format:
+
+  see https://s3.amazonaws.com/cc_example_data/com.searchengineland/29736.gz
 """
 
 import os
@@ -17,15 +18,26 @@ import sys
 from importlib import import_module
 from functools import partial
 from collections import namedtuple
-from pyquery import PyQuery as pq
+from pyquery import PyQuery
 from wgrep import pages, Page
+
+
+if sys.version_info.major < 3:
+    # For maximal interop, normalize strings to non-unicode.
+    def U(s):
+        if isinstance(s, unicode):
+            s = s.encode('utf')
+        return s
+else:
+    def U(s):
+        return s
 
 DELIM = os.environ.get('DELIM', '\t')
 
 Expr = namedtuple('Expr', ['name', 'func'])
 
 
-def page_attr(attr, page, jquery):
+def page_attr(attr, page, pyqry):
     return getattr(page, attr)
 
 
@@ -45,15 +57,15 @@ def main(fInput, *methods):
     for page in pages(fInput):
         if 'html' not in page.content_type:
             continue
-        jquery = pq(''.join(page.body))
+        pyqry = PyQuery(''.join(page.body))
         cols = []
         for expr in exprs:
-            cols.append(expr.func(page, jquery))
+            cols.append(U(expr.func(page, pyqry)))
         print(DELIM.join(i for i in cols))
 
 
 if __name__ == '__main__':
-    if len(sys.argv) < 3:
+    if len(sys.argv) < 2:
         sys.stderr.write(__doc__)
         sys.exit(2)
-    main(open(sys.argv[1]), *sys.argv[2:])
+    main(sys.stdin, *sys.argv[1:])

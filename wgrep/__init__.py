@@ -13,7 +13,7 @@ def pages(fPages):
     """
     Yield a new `Page` for each page in given input stream.
 
-    Start of a page is identified by two lines:
+    The given input stream must start with these start-of-page lines:
 
         URL IP-ADDRESS TIMESTAMP CONTENT-TYPE BYTES
         PROTOCOL STATUS-CODE STATUS-MSG
@@ -58,10 +58,9 @@ is_status_line = re.compile('^(?P<protocol>HTTP/[01]\.\d) (?P<status>\d\d\d) [\S
 def is_metadata_line(line):
     """
     True if looks like a valid metadata line.
-
-    Trying to make sure a valid status line.  Not sure how robust a
-    check is needed here.
     """
+    # Trying to make sure a valid status line.  Not sure how robust a
+    # check is needed here.
     return len(line.split()) == 5
 
 
@@ -113,7 +112,7 @@ class Chunk(object):
 
     def as_page(self):
         """
-        A new `Page`
+        This chunk as a `Page`.
         """
         metadata = self.metadata_line.split()
         protocol, status, _ = self.status_line.split()
