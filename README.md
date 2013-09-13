@@ -52,8 +52,8 @@ base dir of wgrep checkout.
 
 Create a python virtual environment somewhere (eg .env).
 
-    virtualenv .env
-    source .env/bin/activate
+    virtualenv ~/.pyenv/wgrep
+    source ~/.pyenv/wgrep/bin/activate
 
 For now, make sure using latest pyquery:
 
@@ -69,4 +69,4 @@ If having trouble installing lxml on OS X, this might help:
 
 To run the tests:
 
-    PYTHONPATH=. nosetests -v wgrep.test
+    nosetests
