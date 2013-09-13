@@ -1,0 +1,11 @@
+http://searchengineland.com/ 208.80.4.101 20120128105747 text/html 90394
+HTTP/1.1 200 OK
+Date:Sat, 28 Jan 2012 10:57:39 GMT
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<p>This is an example of the start of an HTTP response:</p>
+<pre>
+HTTP/1.1 200 OK
+</pre>
+</html>

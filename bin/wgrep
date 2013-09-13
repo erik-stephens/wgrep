@@ -1,0 +1,59 @@
+#! /usr/bin/env python
+"""
+A grep-like utility to for common crawl files using jquery selector syntax.
+
+Usage: wgrep <path> {<expressions>}
+
+  - path: path to page contents in common crawl format
+    - see https://s3.amazonaws.com/cc_example_data/com.searchengineland/29736.gz
+
+  - expression: one or more expressions to search for & report on
+    - a path to a python function (eg pkg.module.method), or
+    - a special path `page`.<attr> (eg `page.url`, see `wgrep.Page` for more)
+"""
+
+import os
+import sys
+from importlib import import_module
+from functools import partial
+from collections import namedtuple
+from pyquery import PyQuery as pq
+from wgrep import pages, Page
+
+DELIM = os.environ.get('DELIM', '\t')
+
+Expr = namedtuple('Expr', ['name', 'func'])
+
+
+def page_attr(attr, page, jquery):
+    return getattr(page, attr)
+
+
+def main(fInput, *methods):
+    # Prepare all requested expressions.
+    exprs = []
+    for method_path in methods:
+        module, attr = method_path.rsplit('.', 1)
+        if module == 'page' and hasattr(Page, attr):
+            expr = Expr(attr, partial(page_attr, attr))
+        else:
+            module = import_module(module)
+            expr = Expr(attr, getattr(module, attr))
+        exprs.append(expr)
+
+    # Evaluate & report expressions for each page
+    for page in pages(fInput):
+        if 'html' not in page.content_type:
+            continue
+        jquery = pq(''.join(page.body))
+        cols = []
+        for expr in exprs:
+            cols.append(expr.func(page, jquery))
+        print(DELIM.join(i for i in cols))
+
+
+if __name__ == '__main__':
+    if len(sys.argv) < 3:
+        sys.stderr.write(__doc__)
+        sys.exit(2)
+    main(open(sys.argv[1]), *sys.argv[2:])
