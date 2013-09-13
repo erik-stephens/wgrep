@@ -1,37 +1,63 @@
 # wgrep
 
-A grep-like utility for web content using CSS selectors
+A grep-like utility for common crawl files using a jquery-like api (pyquery).
 
-## Examples
+Standing on the shoulders of pyquery & lxml, this utility produces
+line-oriented data using a jquery-like api search elements from common
+crawl pages.
 
-To grep basic metadata:
+Home page:
 
-    wgrep page.size page.ts page.url < common-crawl-file
+  https://github.com/erik-stephens/wgrep
 
-To grep DOM elements:
+## Expressions
 
-    wgrep expr.title expr.twitter_handles < common-craw-file
+Search is performed by defining expressions to evaluate against each
+page.  Expressions must be defined in a separate python package or
+module somewhere in your PYTHONPATH.  Expression functions accept a
+wgrep.Page instance and a pyquery.PyQuery instance and should return a
+string.
+
+There is a special "module" `page` that exposes some built-in page
+data as expressions.  The following attributes are available:
+
+    - url:str
+    - ip:str
+    - ts:str
+    - content_type:str
+    - size:str - size of body in bytes
+    - protocol:str (eg HTTP/1.1)
+    - status:str (eg 200)
+    - headers:dict
+    - body:str
+
+An example:
+
+    DELIM=$'\t' wgrep page.url expr.title expr.twitter < common-crawl-file
 
 assumes there is a python module `expr` with functions `title` and `twitter`:
 
-    def title(page, jquery):
-        return jquery('title').text()
+    def title(page, pyqry):
+        return pyqry('title').text()
 
     def twitter(page, pyqry):
         def handle(i, el):
             return '@' + pyqry(el).attr('href').split('twitter.com/', 1)[1]
         return ','.join(pyqry('a[href*="twitter.com/"]').map(handle))
 
-## Setup
+## Development
 
-The following commands assume current working directory is the base
-dir of wgrep checkout.
+Please report any defects or feature requests via Github Issues.
+Developed using python virtualenv and should work for versions 2.7 and
+3.3.  The following commands assume current working directory is the
+base dir of wgrep checkout.
 
-Create a python virtual environment somewhere (eg wgrep/.env).
+Create a python virtual environment somewhere (eg .env).
 
     virtualenv .env
+    source .env/bin/activate
 
-Install latest pyquery:
+For now, make sure using latest pyquery:
 
     pip install git+git://github.com/gawel/pyquery.git
 
@@ -43,8 +69,6 @@ If having trouble installing lxml on OS X, this might help:
 
     STATIC_DEPS=true pip install -v lxml
 
-## Test Suite
+To run the tests:
 
-From the base wgrep dir:
-
-    PYTHONPATH=. nosetests -s -v wgrep.test
+    PYTHONPATH=. nosetests -v wgrep.test
