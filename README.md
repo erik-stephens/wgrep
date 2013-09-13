@@ -3,33 +3,31 @@
 A grep-like utility for common crawl files using a jquery-like api (pyquery).
 
 Standing on the shoulders of pyquery & lxml, this utility produces
-line-oriented data using a jquery-like api search elements from common
-crawl pages.
+line-oriented data using a jquery-like api to search elements from
+common crawl pages.
 
-Home page:
-
-  https://github.com/erik-stephens/wgrep
+Home page: https://github.com/erik-stephens/wgrep
 
 ## Expressions
 
 Search is performed by defining expressions to evaluate against each
 page.  Expressions must be defined in a separate python package or
 module somewhere in your PYTHONPATH.  Expression functions accept a
-wgrep.Page instance and a pyquery.PyQuery instance and should return a
-string.
+`wgrep.Page` instance and a `pyquery.PyQuery` instance and should
+return a string.
 
 There is a special "module" `page` that exposes some built-in page
 data as expressions.  The following attributes are available:
 
-    - url:str
-    - ip:str
-    - ts:str
-    - content_type:str
-    - size:str - size of body in bytes
-    - protocol:str (eg HTTP/1.1)
-    - status:str (eg 200)
-    - headers:dict
-    - body:str
+- url:str
+- ip:str
+- ts:str
+- content_type:str
+- size:str - size of body in bytes
+- protocol:str (eg HTTP/1.1)
+- status:str (eg 200)
+- headers:dict
+- body:str
 
 An example:
 
