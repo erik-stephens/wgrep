@@ -8,6 +8,8 @@ common crawl pages.
 
 Home page: https://github.com/erik-stephens/wgrep
 
+[![Build Status](https://api.travis-ci.org/erik-stephens/wgrep.png?branch=develop)](http://travis-ci.org/erik-stephens/wgrep)
+
 ## Expressions
 
 Search is performed by defining expressions to evaluate against each
