@@ -8,7 +8,7 @@ common crawl pages.
 
 Home page: https://github.com/erik-stephens/wgrep
 
-[![Build Status](https://api.travis-ci.org/erik-stephens/wgrep.png?branch=develop)](http://travis-ci.org/erik-stephens/wgrep)
+[![Build Status](https://api.travis-ci.org/erik-stephens/wgrep.png?branch=master,develop)](http://travis-ci.org/erik-stephens/wgrep)
 
 ## Expressions
 
