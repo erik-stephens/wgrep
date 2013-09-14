@@ -57,13 +57,9 @@ Create a python virtual environment somewhere (eg .env).
     virtualenv ~/.pyenv/wgrep
     source ~/.pyenv/wgrep/bin/activate
 
-For now, make sure using latest pyquery:
+Install required packages:
 
-    pip install git+git://github.com/gawel/pyquery.git
-
-Install all other required packages:
-
-    pip install -r requirements.txt
+    pip install -r requirements.txt --use-mirrors
 
 If having trouble installing lxml on OS X, this might help:
 
